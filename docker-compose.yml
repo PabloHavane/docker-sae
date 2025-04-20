@@ -10,7 +10,7 @@ services:
       # The 'php-fpm' service mounts the same volume without ':ro' to allow write operations.
       # -----------------------------------------------------------
       - laravel-storage-production:/var/www/storage:ro
-      - ./public:/var/www/public:ro
+      # - ./public:/var/www/public:ro
       - laravel-photos-production:/var/www/public:ro
     networks:
       - laravel-production
