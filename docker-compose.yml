@@ -1,6 +1,6 @@
 services:
   web:
-    image: phavane/site_sae-web:latest
+    image: phavane/site-cpn_web:latest
     restart: unless-stopped # Automatically restart unless the service is explicitly stopped
     volumes:
       # Mount the 'laravel-storage' volume to '/var/www/storage' inside the container.
@@ -29,7 +29,7 @@ services:
 
   php-fpm:
     # For the php-fpm service, we will create a custom image to install the necessary PHP extensions and setup proper permissions.
-    image: phavane/site_sae-php-fpm:latest
+    image: phavane/site-cpn_php-fpm:latest
     restart: unless-stopped
     volumes:
       - laravel-storage-production:/var/www/storage # Mount the storage volume
@@ -105,8 +105,8 @@ services:
     restart: unless-stopped
     environment:
       PMA_HOST: mysql # The hostname of the MySQL server
-      PMA_USER: ${DB_USERNAME} # The username for MySQL
-      PMA_PASSWORD: ${DB_PASSWORD} # The password for MySQL
+      # PMA_USER: ${DB_USERNAME} # The username for MySQL
+      # PMA_PASSWORD: ${DB_PASSWORD} # The password for MySQL
     ports:
       - "${PHPMYADMIN_PORT:-8080}:80" # Map port 80 inside the container to the port specified by 'PHPMYADMIN_PORT' on the host machine.
     networks:
