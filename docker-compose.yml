@@ -1,6 +1,6 @@
 services:
   web:
-    image: phavane/site-cpn_web:latest
+    image: phavane/site-sae_web:latest
     restart: unless-stopped # Automatically restart unless the service is explicitly stopped
     volumes:
       # Mount the 'laravel-storage' volume to '/var/www/storage' inside the container.
@@ -29,7 +29,7 @@ services:
 
   php-fpm:
     # For the php-fpm service, we will create a custom image to install the necessary PHP extensions and setup proper permissions.
-    image: phavane/site-cpn_php-fpm:latest
+    image: phavane/site-sae_php-fpm:latest
     restart: unless-stopped
     volumes:
       - laravel-storage-production:/var/www/storage # Mount the storage volume
