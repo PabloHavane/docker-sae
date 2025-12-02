@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cpn-phpmyadmin
+  namespace: cpn-app
+spec:
+  selector:
+    app: cpn-phpmyadmin
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP

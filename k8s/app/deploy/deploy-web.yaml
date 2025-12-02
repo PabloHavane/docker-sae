@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpn-web
+  namespace: cpn-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpn-web
+  template:
+    metadata:
+      labels:
+        app: cpn-web
+    spec:
+      containers:
+        - name: web
+          image: phavane/site_sae-web:latest
+          volumeMounts:
+            - name: laravel-storage
+              mountPath: /var/www/storage
+              readOnly: true
+            - name: laravel-photos
+              mountPath: /var/www/public
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: laravel-storage
+          persistentVolumeClaim:
+            claimName: laravel-storage-pvc
+        - name: laravel-photos
+          persistentVolumeClaim:
+            claimName: laravel-photos-pvc
+        - name: nginx-config
+          configMap:
+            name: cpn-nginx-config

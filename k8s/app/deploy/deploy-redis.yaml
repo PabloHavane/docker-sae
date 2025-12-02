@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpn-redis
+  namespace: cpn-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpn-redis
+  template:
+    metadata:
+      labels:
+        app: cpn-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:alpine
+          ports:
+            - containerPort: 6379
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 10

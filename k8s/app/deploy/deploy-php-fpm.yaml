@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpn-php-fpm
+  namespace: cpn-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpn-php-fpm
+  template:
+    metadata:
+      labels:
+        app: cpn-php-fpm
+    spec:
+      containers:
+        - name: php-fpm
+          image: phavane/site_sae-php-fpm:latest
+          env:
+            - name: DB_CONNECTION
+              value: "mysql"
+            - name: DB_HOST
+              value: ${DB_HOST}  # <-- à adapter (IP ou DNS de ta VM MySQL)
+            - name: DB_PORT
+              value: ${DB_PORT}  # <-- à adapter (port de ta VM MySQL)
+            - name: DB_DATABASE
+              value: ${DB_DATABASE}  # <-- à adapter (nom de la base de données)
+            - name: DB_USERNAME
+              value: ${DB_USERNAME}
+            - name: DB_PASSWORD
+              value: ${DB_PASSWORD}
+            # Rajoute ici les variables importantes de ton .env Laravel
+          volumeMounts:
+            - name: laravel-storage
+              mountPath: /var/www/storage
+            - name: laravel-photos
+              mountPath: /var/www/public/storage
+          ports:
+            - containerPort: 9000
+          livenessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: laravel-storage
+          persistentVolumeClaim:
+            claimName: laravel-storage-pvc
+        - name: laravel-photos
+          persistentVolumeClaim:
+            claimName: laravel-photos-pvc
