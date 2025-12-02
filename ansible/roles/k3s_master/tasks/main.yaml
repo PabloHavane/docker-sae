@@ -1,0 +1,22 @@
+---
+- name: Install K3s master
+  shell: |
+    curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --write-kubeconfig-mode=644" sh -
+  args:
+    creates: /usr/local/bin/k3s
+
+- name: Wait for K3s master to generate token
+  wait_for:
+    path: /var/lib/rancher/k3s/server/node-token
+    delay: 5
+
+- name: Retrieve K3s token
+  slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: k3s_token_content
+
+- name: Write token to controller machine
+  local_action:
+    module: copy
+    content: "{{ k3s_token_content.content | b64decode }}"
+    dest: ansible/files/k3s-token

@@ -1,0 +1,4 @@
+- hosts: k3s_master
+  become: yes
+  roles:
+    - deploy_app
