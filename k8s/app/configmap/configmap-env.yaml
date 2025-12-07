@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cpn-env-file
+  namespace: cpn-app
+data:
+  .env: |-
+    APP_NAME="Club Photo Nailloux"
+    APP_ENV=production
+    APP_KEY=base64:EzDHNVlPnvx8OrhSbQQBtIM9HDKrTOaIoMPNUtA6RkE=
+    APP_DEBUG=false
+    APP_URL=http://cpn.local
+    APP_LOCALE=fr
+    APP_FALLBACK_LOCALE=fr
+    APP_FAKER_LOCALE=fr_FR
+    REDIS_CLIENT=phpredis
+    REDIS_HOST=127.0.0.1
+    REDIS_PASSWORD=null
+    REDIS_PORT=6379
+    VITE_APP_NAME="${APP_NAME}"

@@ -27,6 +27,13 @@ spec:
               subPath: default.conf
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
       volumes:
         - name: laravel-storage
           persistentVolumeClaim:

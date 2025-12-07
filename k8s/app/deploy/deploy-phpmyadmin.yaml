@@ -23,3 +23,10 @@ spec:
               value: ${DB_PORT}  # même port que pour php-fpm
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

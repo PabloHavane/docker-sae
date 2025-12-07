@@ -5,4 +5,5 @@ resources:
   - app/namespace.yaml
   - app/deploy/
   - app/services/
+  - app/configmap/
   - storage/
