@@ -18,8 +18,21 @@ spec:
           image: phpmyadmin:latest
           env:
             - name: PMA_HOST
-              value: ${DB_HOST}  # même host que pour php-fpm
+              valueFrom:
+                configMapKeyRef:
+                  name: cpn-app-config
+                  key: DB_HOST
             - name: PMA_PORT
-              value: ${DB_PORT}  # même port que pour php-fpm
+              valueFrom:
+                configMapKeyRef:
+                  name: cpn-app-config
+                  key: DB_PORT
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

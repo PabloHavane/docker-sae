@@ -13,30 +13,50 @@ spec:
       labels:
         app: cpn-php-fpm
     spec:
-      containers:
-        - name: php-fpm
+      initContainers:
+        - name: migrate
           image: phavane/site_sae-php-fpm:latest
-          env:
-            - name: DB_CONNECTION
-              value: "mysql"
-            - name: DB_HOST
-              value: ${DB_HOST}  # <-- à adapter (IP ou DNS de ta VM MySQL)
-            - name: DB_PORT
-              value: ${DB_PORT}  # <-- à adapter (port de ta VM MySQL)
-            - name: DB_DATABASE
-              value: ${DB_DATABASE}  # <-- à adapter (nom de la base de données)
-            - name: DB_USERNAME
-              value: ${DB_USERNAME}
-            - name: DB_PASSWORD
-              value: ${DB_PASSWORD}
-            # Rajoute ici les variables importantes de ton .env Laravel
+          envFrom:
+            - configMapRef:
+                name: cpn-app-config
+            - secretRef:
+                name: cpn-app-secret
           volumeMounts:
             - name: laravel-storage
               mountPath: /var/www/storage
             - name: laravel-photos
               mountPath: /var/www/public/storage
+            - name: env-file
+              mountPath: /var/www/.env
+              subPath: .env
+          command: ["sh", "-c", "php artisan migrate --force || true"]
+          workingDir: /var/www
+      containers:
+        - name: php-fpm
+          image: phavane/site_sae-php-fpm:latest
+          command: ["php-fpm", "-F"]
+          envFrom:
+            - configMapRef:
+                name: cpn-app-config
+            - secretRef:
+                name: cpn-app-secret
+          volumeMounts:
+            - name: laravel-storage
+              mountPath: /var/www/storage
+            - name: laravel-photos
+              mountPath: /var/www/public/storage
+            - name: env-file
+              mountPath: /var/www/.env
+              subPath: .env
           ports:
             - containerPort: 9000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           livenessProbe:
             tcpSocket:
               port: 9000
@@ -54,3 +74,6 @@ spec:
         - name: laravel-photos
           persistentVolumeClaim:
             claimName: laravel-photos-pvc
+        - name: env-file
+          configMap:
+            name: cpn-env-file
