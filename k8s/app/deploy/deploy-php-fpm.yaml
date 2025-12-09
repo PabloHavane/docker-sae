@@ -13,9 +13,28 @@ spec:
       labels:
         app: cpn-php-fpm
     spec:
+      initContainers:
+        - name: migrate
+          image: phavane/site_sae-php-fpm:latest
+          envFrom:
+            - configMapRef:
+                name: cpn-app-config
+            - secretRef:
+                name: cpn-app-secret
+          volumeMounts:
+            - name: laravel-storage
+              mountPath: /var/www/storage
+            - name: laravel-photos
+              mountPath: /var/www/public/storage
+            - name: env-file
+              mountPath: /var/www/.env
+              subPath: .env
+          command: ["sh", "-c", "php artisan migrate --force || true"]
+          workingDir: /var/www
       containers:
         - name: php-fpm
           image: phavane/site_sae-php-fpm:latest
+          command: ["php-fpm", "-F"]
           envFrom:
             - configMapRef:
                 name: cpn-app-config
