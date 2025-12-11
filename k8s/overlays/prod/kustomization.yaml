@@ -55,7 +55,7 @@ patches:
     patch: |-
       - op: replace
         path: /data/DB_HOST
-        value: "192.168..0.2"
+        value: "host.k3d.internal"
       - op: replace
         path: /data/DB_DATABASE
         value: "dbcpn"
@@ -68,15 +68,16 @@ patches:
       name: cpn-app-secret
     patch: |-
       - op: replace
-        path: /data/DB_PASSWORD
+        path: /stringData/DB_PASSWORD
         value: "$iutinfo"
 
 
-# ConfigMaps de prod
+# ConfigMaps & Secret de prod
 configMapGenerator:
-  - name: configmap-env
+  - name: cpn-env-file
+    namespace: cpn-app
     files:
-      - ./env.prod
+      - .env=./.env.prod
     behavior: replace
 
 # namePrefix: prod-
@@ -84,3 +85,8 @@ configMapGenerator:
 commonAnnotations:
   managed-by: "kustomize"
   environment: "prod"
+
+labels:
+- includeSelectors: true
+  pairs:
+    environment: prod
