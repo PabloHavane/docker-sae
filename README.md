@@ -74,3 +74,35 @@ Revenez sur la fenêtre de connexion au site et connectez-vous avec les identifi
 
 **Note :** La page « Événements » renvoie une page blanche en raison d'un bug non corrigé.
 
+## DevOps
+
+### Installation
+
+```bash
+curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+```
+
+Installer kubectl (via APT/RPM/Pacman/Homebrew ou manuel) :
+
+```bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/kubectl
+```
+
+### Test en local
+
+1. Créez un cluster k3d :
+   ```bash
+   k3d cluster create sae \
+      --servers 1 \
+      --agents 2 \
+      --port 80:80@loadbalancer \
+      --port 443:443@loadbalancer
+   ```
+2. Appliquez les configurations Kubernetes :
+   ```bash
+   kubectl apply -k k8s/
+   ```
+3. Accédez au site via [http://localhost:8080](http://localhost:8080).
+

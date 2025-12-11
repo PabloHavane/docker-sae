@@ -1,0 +1,86 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../app/
+  - ../../storage/
+
+# Replicas augmentés pour prod
+replicas:
+  - name: cpn-php-fpm
+    count: 2
+  - name: cpn-web
+    count: 2
+  - name: cpn-redis
+    count: 1
+
+# Ressources augmentées pour prod
+patches:
+  - target:
+      kind: Deployment
+      name: cpn-php-fpm
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "1000m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "1Gi"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: "500m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: "512Mi"
+  - target:
+      kind: Deployment
+      name: cpn-web
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "500m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "512Mi"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: "250m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: "256Mi"
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: cpn-app-config
+    patch: |-
+      - op: replace
+        path: /data/DB_HOST
+        value: "192.168..0.2"
+      - op: replace
+        path: /data/DB_DATABASE
+        value: "dbcpn"
+      - op: replace
+        path: /data/DB_USERNAME
+        value: "equipe5"
+  - target:
+      version: v1
+      kind: Secret
+      name: cpn-app-secret
+    patch: |-
+      - op: replace
+        path: /data/DB_PASSWORD
+        value: "$iutinfo"
+
+
+# ConfigMaps de prod
+configMapGenerator:
+  - name: configmap-env
+    files:
+      - ./env.prod
+    behavior: replace
+
+# namePrefix: prod-
+
+commonAnnotations:
+  managed-by: "kustomize"
+  environment: "prod"

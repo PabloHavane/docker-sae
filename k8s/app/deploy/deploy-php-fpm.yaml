@@ -14,6 +14,23 @@ spec:
         app: cpn-php-fpm
     spec:
       initContainers:
+        - name: init-storage
+          image: busybox
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - >
+              mkdir -p /var/www/storage/framework/cache
+              /var/www/storage/framework/sessions
+              /var/www/storage/framework/views
+              /var/www/storage/logs
+              &&
+              chown -R 33:33 /var/www/storage
+          volumeMounts:
+            - name: laravel-storage
+              mountPath: /var/www/storage
         - name: migrate
           image: phavane/site_sae-php-fpm:latest
           envFrom:
@@ -34,6 +51,9 @@ spec:
       containers:
         - name: php-fpm
           image: phavane/site_sae-php-fpm:latest
+          securityContext:
+            runAsUser: 33
+            runAsGroup: 33
           command: ["php-fpm", "-F"]
           envFrom:
             - configMapRef:
