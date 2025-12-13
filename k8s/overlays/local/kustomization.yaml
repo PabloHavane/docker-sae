@@ -1,0 +1,61 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+# Replicas réduits pour local
+replicas:
+- count: 1
+  name: cpn-php-fpm
+- count: 1
+  name: cpn-web
+- count: 1
+  name: cpn-redis
+
+# Ressources réduites pour local
+patches:
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/limits/cpu
+      value: "500m"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/limits/memory
+      value: "512Mi"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/requests/cpu
+      value: "100m"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/requests/memory
+      value: "256Mi"
+  target:
+    kind: Deployment
+    name: cpn-php-fpm
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/limits/cpu
+      value: "250m"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/limits/memory
+      value: "256Mi"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/requests/cpu
+      value: "50m"
+    - op: replace
+      path: /spec/template/spec/containers/0/resources/requests/memory
+      value: "128Mi"
+  target:
+    kind: Deployment
+    name: cpn-web
+
+# namePrefix: local-
+
+commonAnnotations:
+  environment: local
+
+resources:
+- ../../app 
+- ../../storage
+
+labels:
+- includeSelectors: true
+  pairs:
+    environment: local
