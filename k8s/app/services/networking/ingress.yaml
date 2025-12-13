@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cpn-ingress
+  namespace: cpn-app
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    # traefik.ingress.kubernetes.io/middleware: "cpn-app-phpmyadmin-stripprefix@kubernetescrd"
+spec:
+  rules:
+    - host: cpn.local  # à mettre dans /etc/hosts pour les tests
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cpn-web
+                port:
+                  number: 80
+    - host: pma.cpn.local  # phpMyAdmin
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cpn-phpmyadmin
+                port:
+                  number: 80

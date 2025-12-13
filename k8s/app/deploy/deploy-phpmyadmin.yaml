@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpn-phpmyadmin
+  namespace: cpn-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpn-phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: cpn-phpmyadmin
+    spec:
+      containers:
+        - name: phpmyadmin
+          image: phpmyadmin:latest
+          env:
+            - name: PMA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: cpn-app-config
+                  key: DB_HOST
+            - name: PMA_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: cpn-app-config
+                  key: DB_PORT
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpn-php-fpm
+  namespace: cpn-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpn-php-fpm
+  template:
+    metadata:
+      labels:
+        app: cpn-php-fpm
+    spec:
+      initContainers:
+        - name: init-storage
+          image: busybox
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - >
+              mkdir -p /var/www/storage/framework/cache
+              /var/www/storage/framework/sessions
+              /var/www/storage/framework/views
+              /var/www/storage/logs
+              &&
+              chown -R 33:33 /var/www/storage
+          volumeMounts:
+            - name: laravel-storage
+              mountPath: /var/www/storage
+        - name: migrate
+          image: phavane/site_sae-php-fpm:latest
+          envFrom:
+            - configMapRef:
+                name: cpn-app-config
+            - secretRef:
+                name: cpn-app-secret
+          volumeMounts:
+            - name: laravel-storage
+              mountPath: /var/www/storage
+            - name: laravel-photos
+              mountPath: /var/www/public/storage
+            - name: env-file
+              mountPath: /var/www/.env
+              subPath: .env
+          command: ["sh", "-c", "php artisan migrate --force || true"]
+          workingDir: /var/www
+      containers:
+        - name: php-fpm
+          image: phavane/site_sae-php-fpm:latest
+          securityContext:
+            runAsUser: 33
+            runAsGroup: 33
+          command: ["php-fpm", "-F"]
+          envFrom:
+            - configMapRef:
+                name: cpn-app-config
+            - secretRef:
+                name: cpn-app-secret
+          volumeMounts:
+            - name: laravel-storage
+              mountPath: /var/www/storage
+            - name: laravel-photos
+              mountPath: /var/www/public/storage
+            - name: env-file
+              mountPath: /var/www/.env
+              subPath: .env
+          ports:
+            - containerPort: 9000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: laravel-storage
+          persistentVolumeClaim:
+            claimName: laravel-storage-pvc
+        - name: laravel-photos
+          persistentVolumeClaim:
+            claimName: laravel-photos-pvc
+        - name: env-file
+          configMap:
+            name: cpn-env-file

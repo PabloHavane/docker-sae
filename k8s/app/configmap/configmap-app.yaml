@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cpn-app-config
+  namespace: cpn-app
+data:
+  DB_CONNECTION: "mysql"
+  DB_HOST: "host.k3d.internal"
+  DB_PORT: "3306"
+  DB_DATABASE: "cpn"  # À adapter
+  DB_USERNAME: "cpn"  # À adapter

@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cpn-env-file
+  namespace: cpn-app
+data:
+  .env: |-
+    APP_NAME="Club Photo Nailloux"
+    APP_ENV=production
+    APP_KEY=base64:EzDHNVlPnvx8OrhSbQQBtIM9HDKrTOaIoMPNUtA6RkE=
+    APP_DEBUG=false
+    APP_URL=http://cpn.local
+    APP_LOCALE=fr
+    APP_FALLBACK_LOCALE=fr
+    APP_FAKER_LOCALE=fr_FR
+    REDIS_CLIENT=phpredis
+    REDIS_HOST=cpn-redis
+    REDIS_PASSWORD=null
+    REDIS_PORT=6379
+    # Cache Configuration
+    CACHE_DRIVER=file
+    CACHE_PATH=/var/www/storage
+    # Session Configuration
+    SESSION_DRIVER=file
+    SESSION_PATH=/var/www/storage
+    # Queue Configuration
+    QUEUE_CONNECTION=sync
+    # Mail Configuration
+    MAIL_MAILER=log
+    MAIL_HOST=localhost
+    MAIL_PORT=1025
+    MAIL_USERNAME=null
+    MAIL_PASSWORD=null
+    MAIL_ENCRYPTION=null
+    MAIL_FROM_ADDRESS="noreply@cpn.local"
+    MAIL_FROM_NAME="${APP_NAME}"
+    VITE_APP_NAME="${APP_NAME}"

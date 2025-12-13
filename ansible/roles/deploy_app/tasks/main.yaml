@@ -1,0 +1,14 @@
+---
+- name: Copy Kubernetes manifests
+  copy:
+    src: ../../k8s/
+    dest: /root/k8s/
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Deploy with kubetctl & Kustomize
+  shell: |
+    kubectl apply -k /root/k8s/
+  args:
+    executable: /bin/bash
