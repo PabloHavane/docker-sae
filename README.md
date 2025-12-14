@@ -102,7 +102,16 @@ sudo mv kubectl /usr/local/bin/kubectl
    ```
 2. Appliquez les configurations Kubernetes :
    ```bash
-   kubectl apply -k k8s/
+   kubectl apply -k k8s/overlays/local
    ```
-3. Accédez au site via [http://localhost:8080](http://localhost:8080).
+3. Accédez au site via [http://cpn.local](http://cpn.local).
 
+### Nettoyage
+Pour supprimer le cluster k3d, utilisez la commande suivante :
+```bash
+k3d cluster delete sae
+```
+
+## Configuration du réseau
+
+Vous pouvez retrouver toutes nos configurations du réseau dans le dossier `config_reseau`. Ce dernier contient les configurations des switchs, des routeurs et les ACLs utilisées dans notre infrastructure réseau.
