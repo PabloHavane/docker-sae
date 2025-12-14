@@ -1,6 +1,6 @@
 # Guide d'installation et d'exécution du déploiement avec Docker
 
-Ce document décrit les étapes nécessaires pour déployer notre site web à l'aide de Docker sur une machine Mac/Linux.
+Ce document décrit les étapes nécessaires pour déployer notre site web à l'aide de Docker sur une machine Windows/Mac/Linux.
 
 ## Table des matières
 1. [Introduction](#introduction)
@@ -10,7 +10,7 @@ Ce document décrit les étapes nécessaires pour déployer notre site web à l'
 5. [Vérification de l'installation](#vérification-de-linstallation)
 
 ## Introduction
-Ce guide vous permettra de déployer le site web du Club Photo Nailloux en utilisant Docker. Le déploiement est conçu pour fonctionner sur des machines avec un processeur ARM64.
+Ce guide vous permettra de déployer le site web du Club Photo Nailloux en utilisant Docker. Le déploiement est conçu pour fonctionner sur tout type de machine.
 
 ## Prérequis
 Avant de commencer, assurez-vous d'avoir :
