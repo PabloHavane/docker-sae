@@ -1,10 +1,10 @@
 - hosts: k3s_master
-  become: yes
+  become: true
   roles:
     - k3s_master
 
 - hosts: k3s_workers
-  become: yes
+  become: true
   roles:
     - k3s_worker
     

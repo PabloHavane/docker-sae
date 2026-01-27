@@ -1,11 +1,18 @@
 ---
-- name: Copy Kubernetes manifests
-  copy:
-    src: ../../k8s/
-    dest: /root/k8s/
+- name: Create k8s directory
+  file:
+    path: /root/k8s
+    state: directory
     owner: root
     group: root
     mode: 0755
+
+- name: Copy Kubernetes manifests
+  synchronize:
+    src: ../../k8s/
+    dest: /root/k8s/
+    delete: yes
+  delegate_to: localhost
 
 - name: Deploy with kubetctl & Kustomize
   shell: |
