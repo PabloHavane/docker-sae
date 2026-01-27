@@ -1,0 +1,31 @@
+- hosts: compose
+  tasks:
+    - name: Install Docker & Docker Compose
+      apt:
+        name:
+          - docker.io
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+      become: true
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: true
+      become: true
+
+    - name: Add user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+      become: true
+
+    - name: Verify Docker installation
+      command: docker --version
+
+    - name: Verify Docker Compose installation
+      command: docker compose version
+      

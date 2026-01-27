@@ -1,0 +1,13 @@
+- hosts: compose
+  tasks:
+    - name: Deploy Docker Compose application
+      docker_compose:
+        project_src: ../../compose.yml
+        state: present
+      become: true
+      
+    - name : Ensure application is running
+      docker_compose:
+        project_src: ../../compose.yml
+        state: started
+      become: true
