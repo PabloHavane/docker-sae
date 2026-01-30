@@ -28,4 +28,3 @@
 
     - name: Verify Docker Compose installation
       command: docker compose version
-      
